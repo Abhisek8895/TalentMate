@@ -32,6 +32,23 @@ def init_database():
     conn.commit()
     conn.close()
 
+def store_candidate_details(name, email, phone, experience, position, location, tech_stack):
+    conn = sqlite3.connect("talentmate.db")  # Connect to database
+    cursor = conn.cursor()
+
+    # Insert candidate data
+    cursor.execute('''
+        INSERT INTO candidates (full_name, email, phone, experience, position, location, tech_stack)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    ''', (name, email, phone, experience, position, location, tech_stack))
+
+    conn.commit()
+    candidate_id = cursor.lastrowid  # Get the ID of the inserted candidate
+    conn.close()
+
+    return candidate_id
+
+
 if __name__ == "__main__":
     init_database()
     print("Database initialized Successfully")
