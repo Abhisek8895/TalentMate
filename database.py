@@ -48,6 +48,20 @@ def store_candidate_details(name, email, phone, experience, position, location, 
 
     return candidate_id
 
+def get_all_candidates():
+    conn = sqlite3.connect("talentmate.db")  # Connect to database
+    cursor = conn.cursor()
+
+    # Insert candidate data
+    cursor.execute('''
+            SELECT * FROM candidates
+        ''')
+
+    conn.commit()
+    candidates = cursor.fetchall()  # Get all the inserted candidate
+    conn.close()
+
+    return candidates
 
 if __name__ == "__main__":
     init_database()
