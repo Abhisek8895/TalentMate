@@ -63,6 +63,30 @@ def get_all_candidates():
 
     return candidates
 
+def fetch_tech_stack(candidate_id):
+    conn = sqlite3.connect("talentmate.db")
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT tech_stack FROM candidates WHERE id = ?", (candidate_id,))
+    tech_stack = cursor.fetchone()
+
+    return tech_stack
+
+def store_responses(candidate_id, questions_list, responses):
+    conn = sqlite3.connect("talentmate.db")  # Connect to database
+    cursor = conn.cursor()
+
+    for i, question in enumerate(questions_list, start=1):
+        answer = responses.get(i, "")  # Get answer, default to empty string if not found
+        
+        cursor.execute(
+            "INSERT INTO responses (candidate_id, question, answer) VALUES (?, ?, ?)",
+            (candidate_id, question, answer),
+        )
+
+    conn.commit()  # Save changes
+    conn.close()  # Close database connection
+
 if __name__ == "__main__":
     init_database()
     print("Database initialized Successfully")

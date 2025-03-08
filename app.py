@@ -1,5 +1,7 @@
 import streamlit as st
 from database import store_candidate_details
+import time
+from utils import *
 
 st.set_page_config(page_title="TalentMate", layout="wide", initial_sidebar_state="collapsed")
 
@@ -33,7 +35,22 @@ with st.form("candidate_form", clear_on_submit=True):
 if submitted:
     if name and email and phone and position and tech_stack:
         candidate_id = store_candidate_details(name, email, phone, experience, position, location, tech_stack)
+        raw_questions = generate_questions(tech_stack)
+        # print(raw_questions)
+        questions_list = question_cleaning(raw_questions)
+
+        st.session_state['candidate_id'] = candidate_id
+        st.session_state['questions_list'] = questions_list
+
         st.success(f"Candidate details saved successfully! Candidate ID: {candidate_id}")
+
+        st.info("Navigating to the interview page...")
+
+        # Wait for 3 seconds
+        time.sleep(3)
+
+        # Redirect to interview page
+        st.switch_page("pages/interview.py")
 
     else:
         st.error("Please fill in all required fields.")
