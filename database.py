@@ -49,28 +49,14 @@ def store_candidate_details(name, email, phone, experience, position, location, 
     return candidate_id
 
 def get_all_candidates():
-    conn = sqlite3.connect("talentmate.db")  # Connect to database
-    cursor = conn.cursor()
-
-    # Insert candidate data
-    cursor.execute('''
-            SELECT * FROM candidates
-        ''')
-
-    conn.commit()
-    candidates = cursor.fetchall()  # Get all the inserted candidate
-    conn.close()
-
-    return candidates
-
-def fetch_tech_stack(candidate_id):
     conn = sqlite3.connect("talentmate.db")
     cursor = conn.cursor()
 
-    cursor.execute("SELECT tech_stack FROM candidates WHERE id = ?", (candidate_id,))
-    tech_stack = cursor.fetchone()
+    # Fetch all candidates
+    candidates = cursor.execute("SELECT id, full_name, position, tech_stack FROM candidates").fetchall()
+    conn.close()
 
-    return tech_stack
+    return candidates
 
 def store_responses(candidate_id, questions_list, responses):
     conn = sqlite3.connect("talentmate.db")  # Connect to database
@@ -86,6 +72,20 @@ def store_responses(candidate_id, questions_list, responses):
 
     conn.commit()  # Save changes
     conn.close()  # Close database connection
+
+def return_responses(candidate_id):
+    conn = sqlite3.connect("talentmate.db")
+    cursor = conn.cursor()
+
+    # Using parameterized query to prevent SQL injection
+    query = "SELECT * FROM responses WHERE candidate_id = ?"
+    cursor.execute(query, (candidate_id,))
+    
+    # Fetch all matching responses
+    result = cursor.fetchall()
+
+    conn.close()
+    return result
 
 if __name__ == "__main__":
     init_database()

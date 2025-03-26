@@ -2,7 +2,6 @@ from huggingface_hub import InferenceClient
 import os
 import re
 from dotenv import load_dotenv
-from database import fetch_tech_stack
 
 load_dotenv()
 
@@ -29,11 +28,7 @@ def question_cleaning(raw_questions):
     return ques_list
 
 def generate_questions(tech_stack):
-    # tech_stack = fetch_tech_stack(candidate_id)
-    prompt = f"""Generate 5 theoretical interview questions on {tech_stack}.  
-            The questions should test conceptual understanding without requiring coding.  
-            Do not include coding exercises, debugging scenarios, or practical implementation details.  
-            Only ask about fundamental concepts, principles, and theories."""
+    prompt = f"""Generate 5 basic interview questions on {tech_stack}. Only provide the questions, without answers."""
 
     messages = [
         {"role": "user", "content": prompt}
